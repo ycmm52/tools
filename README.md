@@ -15,7 +15,7 @@ Visit: https://ycmm52.github.io/tools
 | Markdown Previewer | Write Markdown and see live rendered preview |
 | Regex Tester | Test regular expressions with live matching and group highlighting |
 | Cron Expression Helper | Build, validate, and explain cron syntax |
-| Statistics Calculator | Calculate mean, median, std dev using Python (Pyodide) |
+| Statistics & Visualization | Interactive histograms, box plots, and stats via Python (Pyodide) |
 
 ## ✨ Features
 

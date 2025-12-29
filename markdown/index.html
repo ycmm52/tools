@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,6 +74,36 @@
             color: var(--ctp-sapphire);
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .upload-btn {
+            background: var(--ctp-surface0);
+            border: 1px solid var(--ctp-surface1);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            color: var(--ctp-subtext0);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-btn:hover {
+            background: var(--ctp-surface1);
+            color: var(--ctp-text);
+            border-color: var(--ctp-mauve);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
         .container {
             flex: 1;
             display: flex;
@@ -118,16 +149,31 @@
         }
 
         /* Markdown Styles */
-        #preview h1, #preview h2, #preview h3, #preview h4 {
+        #preview h1,
+        #preview h2,
+        #preview h3,
+        #preview h4 {
             color: var(--ctp-lavender);
             margin: 1.5rem 0 0.75rem 0;
         }
 
-        #preview h1 { font-size: 1.75rem; border-bottom: 1px solid var(--ctp-surface0); padding-bottom: 0.5rem; }
-        #preview h2 { font-size: 1.4rem; }
-        #preview h3 { font-size: 1.2rem; }
+        #preview h1 {
+            font-size: 1.75rem;
+            border-bottom: 1px solid var(--ctp-surface0);
+            padding-bottom: 0.5rem;
+        }
 
-        #preview p { margin: 0.75rem 0; }
+        #preview h2 {
+            font-size: 1.4rem;
+        }
+
+        #preview h3 {
+            font-size: 1.2rem;
+        }
+
+        #preview p {
+            margin: 0.75rem 0;
+        }
 
         #preview a {
             color: var(--ctp-sapphire);
@@ -161,12 +207,15 @@
             color: var(--ctp-text);
         }
 
-        #preview ul, #preview ol {
+        #preview ul,
+        #preview ol {
             margin: 0.75rem 0;
             padding-left: 1.5rem;
         }
 
-        #preview li { margin: 0.25rem 0; }
+        #preview li {
+            margin: 0.25rem 0;
+        }
 
         #preview blockquote {
             border-left: 3px solid var(--ctp-mauve);
@@ -182,7 +231,8 @@
             margin: 1rem 0;
         }
 
-        #preview th, #preview td {
+        #preview th,
+        #preview td {
             border: 1px solid var(--ctp-surface1);
             padding: 0.5rem 0.75rem;
             text-align: left;
@@ -206,10 +256,17 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>📝 Markdown Previewer</h1>
-        <a href="../" class="back-link">← Back to Tools</a>
+        <div class="header-actions">
+            <label class="upload-btn">
+                📂 Open File
+                <input type="file" id="fileInput" accept=".md,.markdown,.txt">
+            </label>
+            <a href="../" class="back-link">← Back to Tools</a>
+        </div>
     </header>
 
     <div class="container">
@@ -266,9 +323,48 @@ Made with ♥ using [marked.js](https://marked.js.org/)
         }
 
         editor.addEventListener('input', updatePreview);
-        
+
+        // File upload handling
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    editor.value = event.target.result;
+                    updatePreview();
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Drag and drop support
+        editor.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            editor.style.borderColor = 'var(--ctp-mauve)';
+        });
+
+        editor.addEventListener('dragleave', () => {
+            editor.style.borderColor = '';
+        });
+
+        editor.addEventListener('drop', (e) => {
+            e.preventDefault();
+            editor.style.borderColor = '';
+            const file = e.dataTransfer.files[0];
+            if (file && (file.name.endsWith('.md') || file.name.endsWith('.markdown') || file.name.endsWith('.txt'))) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    editor.value = event.target.result;
+                    updatePreview();
+                };
+                reader.readAsText(file);
+            }
+        });
+
         // Initial render
         updatePreview();
     </script>
 </body>
+
 </html>
